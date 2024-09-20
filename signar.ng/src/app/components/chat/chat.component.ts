@@ -72,6 +72,7 @@ export class ChatComponent {
     let selectedChannelId = this.selectedChannel ? this.selectedChannel.id : 0;
     this.hubConnection!.invoke('JoinChannel', selectedChannelId, channel.id);
     this.selectedChannel = channel;
+    this.selectedUser = null;
   }
 
   sendMessage() {
