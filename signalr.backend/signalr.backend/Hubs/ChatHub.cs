@@ -42,6 +42,7 @@ namespace signalr.backend.Hubs
 
             // TODO: Envoyer des message aux clients pour les mettre à jour
             await Clients.All.SendAsync("UsersList", UserHandler.UserConnections.ToList());
+            await Clients.All.SendAsync("ChannelList", _context.Channel.ToList());
         }
 
         public async override Task OnDisconnectedAsync(Exception? exception)
@@ -60,7 +61,7 @@ namespace signalr.backend.Hubs
             await _context.SaveChangesAsync();
 
             // TODO: Envoyer un message aux clients pour les mettre à jour
-            await Clients.All.SendAsync("CreateChannel", title);
+            await Clients.All.SendAsync("ChannelList", _context.Channel.ToList());
         }
 
         public async Task DeleteChannel(int channelId)
@@ -74,6 +75,7 @@ namespace signalr.backend.Hubs
             }
             string groupName = CreateChannelGroupName(channelId);
             // Envoyer les messages nécessaires aux clients
+            await Clients.All.SendAsync("ChannelList", _context.Channel.ToList());
         }
 
         public async Task JoinChannel(int oldChannelId, int newChannelId)
@@ -90,10 +92,13 @@ namespace signalr.backend.Hubs
             if (userId != null)
             {
                 // TODO: Envoyer le message à cet utilisateur
+                await Clients.User(userId).SendAsync("NewMessage", message);
             }
             else if (channelId != 0)
             {
                 // TODO: Envoyer le message aux utilisateurs connectés à ce canal
+                string goupName = _context.Channel.Find(channelId).Title;
+                await Clients.Group(goupName).SendAsync("NewMessage", message);
             }
             else
             {
