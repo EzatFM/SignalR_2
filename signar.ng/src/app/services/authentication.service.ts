@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { connect, lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { RegisterDTO, LoginDTO, LoginResultDTO } from '../models/models';
 
